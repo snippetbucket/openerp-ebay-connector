@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="ebaynew_view_shop_auto_import_form" model="ir.ui.view">
+            <field name="name">ebaynew.view.shop.auto.import.form</field>
+            <field name="model">sale.shop</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="base_sale_multichannels.base_sale_multichannels_view_shop_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <field name="company_id" widget='selection' groups="base.group_multi_company" position="after">
+                        <field name="instance_id" attrs="{'invisible':[('ebay_shop','=',False)]}" />
+                        <field name="post_code" attrs="{'invisible':[('ebay_shop','=',False)]}" />
+                        <field name="site_id"/>
+                    </field>
+                    <xpath expr="/form/notebook" position="inside">
+                        <page string="Payment Details" attrs="{'invisible':[('ebay_shop','=',False)]}">
+                            <field name="pay_mthd"/>
+                            <field name="email_add"/>
+                        </page>
+
+                        <page string="Ebay Information" attrs="{'invisible':[('ebay_shop','=',False)]}">
+                            <field name="ebay_shop"/>
+                            <field name="auto_import_ebay" />
+                            
+                        </page>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <record id="act_ebayerp_shop_form" model="ir.actions.act_window">
+            <field name="name">Ebay Shops</field>
+            <field name="res_model">sale.shop</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="sale.view_shop_tree"/>
+            <field name="domain">[('ebay_shop', '=', True)]</field>
+        </record>
+
+        <record model="ir.ui.view" id="ebayerp_view_temp_form">
+            <field name="name">ebayerp.view.temp.form</field>
+            <field name="model">ebayerp.template</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Ebay Template">
+                    <notebook colspan="4">
+                        <page string="Product Listing">
+                            <group colspan="4">
+                                <!--field name="instance_id"/-->
+                                <!--<field name="ebay_shop"/>-->
+                                <field name="name" select="1" colspan="2"/>
+                                <field name="temp_name" colspan="2"/>
+                                <field name="bold_tl"/>
+                                <field name="subtitle" colspan="2"/>
+                                <field name="condtn" domain="[('category_id','=',category_id1),('category_id.condition_enabled','=',True)]" colspan="2"/>
+                                 <field name="item_specifics_enabled_cat1" invisible="1"/>
+                                <separator string="Description" colspan="4" />
+                                <field name="description" nolabel="1" colspan="4"/>
+
+
+
+                               <!--button name="itemspecifics_enabled" string="Item Specifics Enabled" colspan="4" type="object"/>-->
+                                <button name="update_template" string="Update template" colspan="4" type="object"/>
+
+                                <field name="category_id1" widget ="selection" on_change="onchange_clear_attributes(category_id1,category_id2)"/>
+
+                                <field colspan="4" mode="tree,form" name="match_attribute_ids" nolabel="1" >
+                                    <form string="Attributes" >
+                                        <field name="name" invisible="1" />
+                                        <field name="shop_id" invisible="1"/>
+                                        <field name="attribute_name" domain="[('categ_id','=',parent.category_id1)]" on_change="onchange_attribute_name(attribute_name)" />
+                                        <field name="attribute_values_id" domain="[('att_master_id','=',attribute_name),]" attrs="{'invisible': [('hidden_field', '=', 'NULL')],'readonly': [('attribute_name','=',False)],}" />
+                                        <field name="hidden_field" invisible="1"/>
+                                        <field name="text_field" attrs="{'invisible': [('hidden_field', '!=', 'NULL')]}" />
+
+
+                                    </form>
+                                    <tree string="Attributes">
+                                        <field name="name" invisible="1"/>
+                                        <field name="shop_id" invisible="1"/>
+                                        <field name="attribute_name"  />
+                                        <field name="attribute_values_id"  />
+<!--                                        <field name="hidden_field" invisible="1"/>-->
+                                        <field name="text_field"/>
+                                    </tree>
+                                    
+                                </field>
+                                <!--to add view for custom attributes  for category 1-->
+
+
+
+                                <field name="category_id2" widget ="selection" on_change="onchange_clear_attributes_cat2(category_id2,category_id1)"/>
+
+                                <field colspan="4" mode="tree,form" name="match_attribute_cat2" nolabel="1">
+                                    <form string="Attributes">
+                                        <field name="name" invisible="1" />
+                                        <field name="shop_id1" invisible="1"/>
+                                        <field name="attribute_name"  domain="[('categ_id','=',parent.category_id2)]"  on_change="onchange_attribute_name(attribute_name)" />
+                                        <field name="attribute_values_id"  domain="[('att_master_id','=',attribute_name)]" attrs="{'invisible': [('hidden_field', '=', 'NULL')],'readonly': [('attribute_name','=','')]}"/>
+                                        <field name="hidden_field" invisible="1"/>
+                                        <field name="text_field" attrs="{'invisible': [('hidden_field', '!=', 'NULL')]}" />
+                                    </form>
+                                    <tree string="Attributes">
+                                        <field name="name" invisible="1"/>
+                                        <field name="shop_id1" invisible="1"/>
+                                        <field name="attribute_name"/>
+                                        <field name="attribute_values_id"/>
+                                        <field name="text_field"/>
+                                    </tree>
+                                </field>
+                               <group colspan="8" attrs="{'invisible': [('item_specifics_enabled_cat1', '!=', 'checked')]}">
+                                   <separator string="Custom Item Specifics" colspan="4"/>
+                                <field colspan="4" mode="tree,form" name="custom_item_specifics_generic" nolabel="1" >
+                                    <form string="Custom Item Specifics">
+                                        <field name="name" invisible="1" />
+                                        <field name="custom_name"/>
+                                        <field name="custom_value"/>
+
+                                    </form>
+                                    <tree string="Custom Item Specifics">
+                                        <field name="name" invisible="1" />
+                                        <field name="custom_name"/>
+                                        <field name="custom_value"/>
+                                    </tree>
+                                </field>
+                                </group>
+                                <separator string="PlaceHolder" colspan="4" />
+                                <field colspan="4" mode="tree,form" name="plcs_holds" nolabel="1">
+                                    <form string="PlaceHolder">
+                                        <field name="name"/>
+                                        <field name="value"/>
+                                    </form>
+                                    <tree string="PlaceHolder">
+                                        <field name="name" />
+                                        <field name="value"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+
+                         <page string="Buyer Requirements">
+                        <group>
+                            <field name="check"/>
+                            </group>
+                            <group colspan="4" col="8" attrs="{'invisible':[('check','=',False)]}">
+                            <field name="pay_pal_accnt"/>
+                            <newline/>
+                            <field name="pri_ship"/>
+                            <newline/>
+                            <separator string="Unpaid Strike" colspan="4" />
+                                <newline/>
+                                <field name="have_rec"/>
+                                <field name="unpaid_str" attrs="{'readonly':[('have_rec','=',False)]}"/>
+                                <field name="unpaid_str_wthn" attrs="{'readonly':[('have_rec','=',False)]}"/>
+
+
+
+                            <separator string="Violation Policy" colspan="4" />
+                                <newline/>
+                                <field name="hv_policy_vio"/>
+                                <field name="policy_vio" attrs="{'readonly':[('hv_policy_vio','=',False)]}"/>
+                                <field name="policy_vio_wthn" attrs="{'readonly':[('hv_policy_vio','=',False)]}"/>
+                            <newline/>
+                            <separator string="Feedback" colspan="4" />
+                                <newline/>
+                                <field name="hv_feed_scr"/>
+                                <newline/>
+                                <field name="feed_scr" attrs="{'readonly':[('hv_feed_scr','=',False)]}"/>
+                                <newline/>
+                                <field name="hv_bid" on_change="onchange_buyer_req2(hv_bid)"/>
+                                <newline/>
+                                <field name="bid" attrs="{'readonly':[('hv_bid','=',False)]}"/>
+                                <newline/>
+                                <field name="only_feed_scr" on_change="onchange_buyer_req(only_feed_scr)"/>
+                                <newline/>
+                                <field name="feed_scr_lwr" attrs="{'readonly':[('only_feed_scr','=',False)]}"/>
+                            </group>
+                            <group colspan="8">
+                            <newline/>
+                            <separator string="Private Listing" colspan="8"/>
+                            <newline/>
+                            <field name="priv_list"/>
+                            </group>
+                            </page>
+<!--                                             Return Policy               -->
+                    <page string="Return Policy">
+                    <group >
+                        <group colspan="8">
+                    <separator string="Return policy details" colspan="8" />
+                            <newline/>
+                            <field name="retur_pol" colspan="8"/>
+                            <newline/>
+                            <field name="retur_days" attrs="{'invisible':[('retur_pol','=','ReturnsNotAccepted')]}"/>
+                            <newline/>
+                            <field name="refund_giv_as" attrs="{'invisible':[('retur_pol','=','ReturnsNotAccepted')]}"/>
+                            <newline/>
+                            <field name="paid_by" attrs="{'invisible':[('retur_pol','=','ReturnsNotAccepted')]}"/>
+                            <newline/>
+                            <field name="add_det" attrs="{'invisible':[('retur_pol','=','ReturnsNotAccepted')]}"/>
+                            <newline/>
+                             </group>
+                             
+                            <separator string="Additional Instruction" colspan="4" />
+                            <newline/>
+                            <field name="add_inst" colspan="8"/>
+                           
+                        
+                        </group>
+                        
+                    </page>
+      <!--Shipping View  Domestic-->
+                     <page string="Shipping Type">
+                    <separator string="Domestic Shipping"/>
+                        <field name="ship_type"/>
+                        <group attrs="{'invisible':[('ship_type','=','Free')]}" colspan="3">
+<!--                            <field name="pack_type" attrs="{'invisible':[('ship_type','=','Flat')]}"/>-->
+<!--                            <field name="irreg_pack" attrs="{'invisible':[('ship_type','=','Flat')]}"/>-->
+                            <newline/>
+<!--                            <field name="ship_serv" domain="[('ship_type','=',ship_type),('inter_ship','=',False)]"/>-->
+                                <group attrs="{'invisible':[('ship_type','=','Freight')]}" colspan="4">
+                                <separator string="1st Service" colspan="8"/>
+                                <field name="free_ship"/>
+<!--                                <group domain="[('ship_type','=',ship_type),('inter_ship','=',False)]" colspan="4">-->
+<!--                                <group domain="[('ship_type1','=',ship_type),('inter_ship','=',False)]" colspan="4">-->
+                                <field name="serv1" domain="['|',('ship_type1','=',ship_type),('ship_type','=',ship_type),('inter_ship','=',False)]"/>
+<!--                                </group>-->
+<!--                                </group>-->
+<!--                                <field name="serv1_calc" attrs="{'invisible':[('ship_type','=','Flat')],'required':[('ship_type','=','Calculated')]}" domain="[('ship_type1','=',ship_type),('inter_ship','=',False)]"/>-->
+<!--                                <field name="related_serv1"/>-->
+                                <newline/>
+                                <field name="cost" attrs="{'readonly':[('free_ship','=',True)],'invisible':[('ship_type','=','Calculated')],'required':[('free_ship','=',False),('ship_type','=','Flat')]}"/><!--
+-->                            <field name="each_add" attrs="{'readonly':[('free_ship','=',True)],'invisible':[('ship_type','=','Calculated')],'required':[('free_ship','=',False)]}"/><!--
+-->
+                                
+<!--                          <field name="add_surch"/>-->
+                          <newline/>
+
+                                <separator string="2nd Service" colspan="8"/>
+                                <field name="serv2_chk" />
+                                <group attrs="{'invisible':[('serv2_chk','=',False)]}" colspan="4">
+                               <field name="serv2" attrs="{'required':[('serv2_chk','=',True)]}" domain="['|',('ship_type1','=',ship_type),('ship_type','=',ship_type),('inter_ship','=',False)]"/>
+<!--                               <field name="serv2_calc" attrs="{'invisible':[('ship_type','=','Flat')],'required':[('serv2_chk','=',True),('ship_type','=','Calculated')]}" domain="[('ship_type1','=',ship_type),('inter_ship','=',False)]"/>-->
+                               <field name="cost2" attrs="{'invisible':[('ship_type','=','Calculated')],'required':[('serv2_chk','=',True),('ship_type','=','Flat')]}"/><!--
+-->                            <field name="each_add2" attrs="{'invisible':[('ship_type','=','Calculated')],'required':[('serv2_chk','=',True),('ship_type','=','Flat')]}"/>
+                               </group>
+                               <newline/>
+                                <separator string="3rd Service" colspan="8"/>
+                               <field name="serv3_chk" />
+                               <group attrs="{'invisible':[('serv3_chk','=',False)]}" colspan="4"><!--
+-->                            <field name="serv3" attrs="{'required':[('serv3_chk','=',True)]}" domain="['|',('ship_type1','=',ship_type),('ship_type','=',ship_type),('inter_ship','=',False)]"/>
+<!--                            <field name="serv3_calc" attrs="{'invisible':[('ship_type','=','Flat')],'required':[('serv3_chk','=',True),('ship_type','=','Calculated')]}" domain="[('ship_type1','=',ship_type),('inter_ship','=',False)]"/>-->
+                               <field name="cost3" attrs="{'invisible':[('ship_type','=','Calculated')],'required':[('serv3_chk','=',True),('ship_type','=','Flat')]}"/><!--
+-->                            <field name="each_add3" attrs="{'invisible':[('ship_type','=','Calculated')],'required':[('serv3_chk','=',True),('ship_type','=','Flat')]}"/>
+                               </group>
+                                <separator string="4th Service" colspan="8"/>
+                            <field name="serv4_chk"/>
+                               <group attrs="{'invisible':[('serv4_chk','=',False)]}" colspan="4"><!--
+-->                            <field name="serv4" attrs="{'required':[('serv4_chk','=',True)]}" domain="['|',('ship_type1','=',ship_type),('ship_type','=',ship_type),('inter_ship','=',False)]"/>
+<!--                            <field name="serv4_calc" attrs="{'invisible':[('ship_type','=','Flat')],'required':[('serv4_chk','=',True),('ship_type','=','Calculated')]}" domain="[('ship_type1','=',ship_type),('inter_ship','=',False)]"/>-->
+                               <field name="cost4" attrs="{'invisible':[('ship_type','=','Calculated')],'required':[('serv4_chk','=',True),('ship_type','=','Flat')]}"/><!--
+-->                            <field name="each_add4" attrs="{'invisible':[('ship_type','=','Calculated')],'required':[('serv4_chk','=',True),('ship_type','=','Flat')]}"/><!--
+-->                            <newline/>
+                               </group>
+                               </group>
+
+
+
+                            <separator string="Handling time"/>
+                            <field name="hand_time" colspan="2"/>
+                            <newline/>
+<!--                            <field name="loc_pick"/>-->
+                            <separator string="Additional option" colspan="8"/>
+                            <field name="get_it_fast" colspan="4"/>
+                            <field name="handling_cost" attrs="{'invisible':[('ship_type','=','Flat')]}"/>
+
+                            <group attrs="{'invisible':[('int_ship_type','!=','Calculated'),('ship_type','!=','Calculated')]}" colspan="4">
+                            <field name="intr_pack_type"/>
+                            <field name="intr_irreg_pack"/>
+							<field name="intr_min_weight" />
+                            <field name="intr_max_weight" />
+                            </group>
+                            <separator></separator>
+                            <separator></separator>
+
+<!--                            International shipping-->
+                            <separator string="International Shipping" colspan="8"/>
+                            <field name="inter_chk" colspan="4"/>
+                            <group attrs="{'invisible':[('inter_chk','=',False)]}" colspan="4">
+                            <field name="int_ship_type" attrs="{'required':[('inter_chk','=',True)]}" colspan="2"/>
+<!--                            <field name="intr_pack_type" attrs="{'invisible':[('int_ship_type','=','Flat'),('ship_type','!=','Flat')]}"/>
+                            <field name="intr_irreg_pack" attrs="{'invisible':[('int_ship_type','=','Flat'),('ship_type','!=','Flat')]}"/>-->
+                            <field name="intr_handling_cost" attrs="{'invisible':[('int_ship_type','!=','Calculated')]}"/>
+                            <newline/>
+                            <separator string="Primary Service" colspan="4"/>
+                            <field name="custom_loc" attrs="{'required':[('inter_chk','=',True)]}"/>
+                            <field name="intr_serv" attrs="{'required':[('inter_chk','=',True)]}" domain="['|',('ship_type1','=',int_ship_type),('ship_type','=',int_ship_type),('inter_ship','=',True)]"/>
+<!--                            <field name="intr_serv_calc1" attrs="{'invisible':[('int_ship_type','=','Flat')],'required':[('inter_chk','=',True),('int_ship_type','=','Calculated')]}" domain="[('ship_type1','=',int_ship_type),('inter_ship','=',True)]"/>-->
+                            <field name="cost_int" attrs="{'invisible':[('int_ship_type','=','Calculated')],'required':[('inter_chk','=',True),('int_ship_type','=','Flat')]}"/>
+                            <field name="add_int" attrs="{'invisible':[('int_ship_type','=','Calculated')],'required':[('inter_chk','=',True),('int_ship_type','=','Flat')]}"/>
+                            <newline/>
+                            <field name="add_loc_tab" attrs="{'invisible':[('custom_loc','!=','customloc'])}"/>
+
+                            <separator string="2nd Service"/>
+                            <field name="serv2_int_chk"/>
+                            <group attrs="{'invisible':[('serv2_int_chk','=',False)]}" colspan="4">
+                            <field name="custom_loc2" attrs="{'required':[('serv2_int_chk','=',True),('inter_chk','=',True)]}"/>
+                            <field name="intr_serv2" attrs="{'required':[('serv2_int_chk','=',True),('inter_chk','=',True)]}" domain="['|',('ship_type1','=',int_ship_type),('ship_type','=',int_ship_type),('inter_ship','=',True)]"/>
+<!--                            <field name="intr_serv_calc2" attrs="{'invisible':[('int_ship_type','=','Flat')],'required':[('serv2_int_chk','=',True),('int_ship_type','=','Calculated')]}" domain="[('ship_type1','=',int_ship_type),('inter_ship','=',True)]"/>-->
+                            <field name="cost_int2" attrs="{'invisible':[('int_ship_type','=','Calculated')],'required':[('serv2_int_chk','=',True),('int_ship_type','=','Flat'),('int_ship_type','=','Flat'),('inter_chk','=',True)]}"/>
+                            <field name="add_int2" attrs="{'invisible':[('int_ship_type','=','Calculated')],'required':[('serv2_int_chk','=',True),('int_ship_type','=','Flat'),('inter_chk','=',True)]}"/>
+                            <newline/>
+                            <field name="add_loc_tab2" attrs="{'invisible':[('custom_loc2','!=','customloc')]}"/>
+                            </group>
+
+                            <separator string="3rd Service"/>
+                            <field name="serv3_int_chk"/>
+                            <group attrs="{'invisible':[('serv3_int_chk','=',False)]}" colspan="4">
+                            <field name="custom_loc3" attrs="{'required':[('serv3_int_chk','=',True),('inter_chk','=',True)]}"/>
+                            <field name="intr_serv3" attrs="{'required':[('serv3_int_chk','=',True),('inter_chk','=',True)]}" domain="['|',('ship_type1','=',int_ship_type),('ship_type','=',int_ship_type),('inter_ship','=',True)]"/>
+<!--                            <field name="intr_serv_calc3" attrs="{'invisible':[('int_ship_type','=','Flat')],'required':[('serv3_int_chk','=',True),('int_ship_type','=','Calculated')]}" domain="[('ship_type1','=',int_ship_type),('inter_ship','=',True)]"/>-->
+                            <field name="cost_int3" attrs="{'invisible':[('int_ship_type','=','Calculated')],'required':[('serv3_int_chk','=',True),('int_ship_type','=','Flat'),('inter_chk','=',True)]}"/>
+                            <field name="add_int3" attrs="{'invisible':[('int_ship_type','=','Calculated')],'required':[('serv3_int_chk','=',True),('int_ship_type','=','Flat'),('inter_chk','=',True)]}"/>
+                            <newline/>
+                            <field name="add_loc_tab3" attrs="{'invisible':[('custom_loc3','!=','customloc')]}"/>
+                            </group>
+
+                            <separator string="4th Service"/>
+                            <field name="serv4_int_chk"/>
+                            <group attrs="{'invisible':[('serv4_int_chk','=',False),('inter_chk','=',True)]}" colspan="4">
+                            <field name="custom_loc4" attrs="{'required':[('serv4_int_chk','=',True),('inter_chk','=',True)]}"/>
+                            <field name="intr_serv4" attrs="{'required':[('serv4_int_chk','=',True),('inter_chk','=',True)]}" domain="['|',('ship_type1','=',int_ship_type),('ship_type','=',int_ship_type),('inter_ship','=',True)]"/>
+<!--                            <field name="intr_serv_calc4" attrs="{'invisible':[('int_ship_type','=','Flat')],'required':[('serv4_int_chk','=',True),('int_ship_type','=','Calculated')]}" domain="[('ship_type1','=',int_ship_type),('inter_ship','=',True)]"/>-->
+                            <field name="cost_int4" attrs="{'invisible':[('int_ship_type','=','Calculated')],'required':[('serv4_int_chk','=',True),('int_ship_type','=','Flat'),('inter_chk','=',True)]}"/>
+                            <field name="add_int4" attrs="{'invisible':[('int_ship_type','=','Calculated')],'required':[('serv4_int_chk','=',True),('int_ship_type','=','Flat'),('inter_chk','=',True)]}"/>
+                            <newline/>
+                            <field name="add_loc_tab4" attrs="{'invisible':[('custom_loc4','!=','customloc')]}"/>
+                            </group>
+
+                            <separator string="5th Service"/>
+                            <field name="serv5_int_chk" />
+                            <group attrs="{'invisible':[('serv5_int_chk','=',False),('inter_chk','=',True)]}" colspan="4">
+                            <field name="custom_loc5" attrs="{'required':[('serv5_int_chk','=',True)]}"/>
+                            <field name="intr_serv5" attrs="{'required':[('serv5_int_chk','=',True),('inter_chk','=',True)]}" domain="['|',('ship_type1','=',int_ship_type),('ship_type','=',int_ship_type),('inter_ship','=',True)]"/>
+<!--                            <field name="intr_serv_calc5" attrs="{'invisible':[('int_ship_type','=','Flat')],'required':[('serv5_int_chk','=',True),('int_ship_type','=','Calculated')]}" domain="[('ship_type1','=',int_ship_type),('inter_ship','=',True)]"/>-->
+                            <field name="cost_int5" attrs="{'invisible':[('int_ship_type','=','Calculated')],'required':[('serv5_int_chk','=',True),('int_ship_type','=','Flat'),('inter_chk','=',True)]}"/>
+                            <field name="add_int5" attrs="{'invisible':[('int_ship_type','=','Calculated')],'required':[('serv5_int_chk','=',True),('int_ship_type','=','Flat'),('inter_chk','=',True)]}"/>
+                            <newline/>
+                            <field name="add_loc_tab5" attrs="{'invisible':[('custom_loc5','!=','customloc')]}"/>
+                            </group>
+                            <group attrs="{'invisible':[('custom_loc','=','Worldwide')]}" colspan="4">
+                            <group attrs="{'invisible':[('custom_loc2','=','Worldwide'),('serv2_int_chk','=',True)]}" colspan="4">
+                            <group attrs="{'invisible':[('custom_loc3','=','Worldwide'),('serv3_int_chk','=',True)]}" colspan="4">
+                            <group attrs="{'invisible':[('custom_loc4','=','Worldwide'),('serv4_int_chk','=',True)]}" colspan="4">
+                            <group attrs="{'invisible':[('custom_loc5','=','Worldwide'),('serv5_int_chk','=',True)]}" colspan="4">
+                            <separator string="Additional ship to locations - buyers contact for costs"/>
+                            <field name="act_add_loc" />
+                            <group attrs="{'invisible':[('act_add_loc','=',False)]}" colspan="4">
+                            <newline/>
+                            <field name="add_loc"/>
+                            <newline/>
+                            <field name="add_loc_tab_cm" attrs="{'invisible':[('add_loc','=','Worldwide')]}"/>
+                            </group>
+                            </group>
+                            </group>
+                            </group>
+                            </group>
+                            </group>
+<!--                            <separator string="Exclude Locations"/>
+                            <field name="exclude_loct_chk"/>-->
+
+<!--                            <field name="exclude_loc" attrs="{'invisible':[('exclude_loct_chk','=',Fasle)]}" nolabel="1" colspan = "1"/>-->
+                            </group>
+                            </group>
+                    </page>
+                    </notebook>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ebayerp_tree">
+            <field name="name">ebayerp.tree</field>
+            <field name="model">ebayerp.template</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree  string="Ebay Template">
+                    <field name="name"/>
+                    
+                </tree>
+            </field>
+        </record>
+        <record id="action_ebayerp_template" model="ir.actions.act_window">
+            <field name="name">Ebay Template</field>
+            <field name="res_model">ebayerp.template</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+<!--view for product listing-->
+<record id="view_product_listing_tree" model="ir.ui.view">
+            <field name="name">view.product.template.tree</field>
+            <field name="model">product.listing.templates</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Product Listing">
+                    <field name="name" invisible="1" />
+                    <field name="shop_id" />
+                    <field name="template_id" />
+
+                </tree>
+            </field>
+        </record>
+        <record id="view_product_listing_form" model="ir.ui.view">
+            <field name="name">view.product.template.form</field>
+            <field name="model">product.listing.templates</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Product Listing">
+                    <group colspan="8">
+                        <group colspan="8">
+                        <field name="name" invisible="1"/>
+                        <field name="shop_id" widget="selection" colspan="2" domain="[('ebay_shop','=','True')]" select="1"/>
+                        <field name="template_id" widget="selection" colspan="2" />
+                        <field name="type" colspan="2" on_change="onchange_listing_type(type)"/>
+                        <field name="schedule_time" colspan="2" attrs="{'readonly':[('inst_list_chk','=',True)],'required':[('inst_list_chk','=',False)]}"/>
+                        <field name="duration" domain="[('type','=',type)]" colspan="2"/>
+                        <field name="inst_list_chk" colspan="2"/>
+                        </group>
+                        <separator string="Pricelist Details" colspan="8"/>
+                        <group colspan="8">
+                        <field name="start_price" required="1"/>
+                       <button name="%(action_many2many_filter)d" string="Get Unlisted Products" type="action" colspan="2"/>
+                       </group >
+                        <group colspan="8">
+                            <field name="reserve_price" attrs="{'required':[('type','=','Chinese')]}"/>
+                            <field name="buy_it_nw" attrs="{'required':[('type','=','Chinese')]}"/>
+                        </group>
+                    </group>
+                        
+                    <!--<field name="product_ids" nolabel="1" colspan="8"/>-->
+                    <field colspan="6" mode="tree,form" name="product_ids" nolabel="1">
+                                          <form string="Products">
+                                              <field name="name"/>
+                                          </form>
+                                          <tree string="Products">
+                                              <field name="name"/>
+                                          </tree>
+
+                    </field>
+                    <button name="additem" string="Additem" colspan="4" type="object"/>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_product_listing" model="ir.actions.act_window">
+            <field name="name">Product Listing</field>
+            <field name="res_model">product.listing.templates</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_product_listing_tree"/>
+        </record>
+
+               
+    </data>
+</openerp>

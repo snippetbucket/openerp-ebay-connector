@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="ebayerp_view_relist_form">
+            <field name="name">ebayerp.view.relist.form</field>
+            <field name="model">ebayerp.relist</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Completed Listing">
+                    <!--<field name="name" invisible="1"/>-->
+                    <group colspan="8">
+                    <group colspan="8">
+                    <field name="shop_id" widget="selection" select="1" colspan="2" domain="[('ebay_shop','=','True')]"/>
+                    <field name="template_id" widget="selection" colspan="2"/>
+                    <field name="type" colspan="2" on_change="onchange_listing_type(type)"/>
+                    <field name="schedule_time" colspan="2" attrs="{'readonly':[('inst_list_chk','=',True)],'required':[('inst_list_chk','=',False)]}"/>
+                    <field name="list_durtn" domain="[('type','=',type)]"/>
+                    <field name="inst_list_chk" colspan="2"/>
+                    </group>
+                    <separator string="Pricelist Details" colspan="8"/>
+                    <group colspan="8">
+                    <field name="start_price" required="1"/>
+                    <button name="%(action_many2many_filter_relist)d" string="Get Expired Products" colspan="2" type="action" />
+                    </group>
+                    <group colspan="8">
+                        <field name="reserve_price" attrs="{'required':[('type','=','Chinese')]}"/>
+                        <field name="buy_it_nw" attrs="{'required':[('type','=','Chinese')]}"/>
+                    </group>
+                </group>
+                    <notebook colspan="4">
+                        <page string="Relist Products">
+                            <field colspan="4" mode="tree,form" name="rel_prod" nolabel="1">
+                                           <form string="Products">
+                                               <field name="name"/>
+                                           </form>
+                                           <tree string="Products">
+                                               <field name="name"/>
+                                           </tree>
+                             </field>
+                            <button name="relist_products" string="Relist Products" colspan="4" type="object" />
+                        </page>
+                    </notebook>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="ebayerp_view_manage_form">
+            <field name="name">ebayerp.view.manage.form</field>
+            <field name="model">ebayerp.manage</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Manage Orders">
+                    <field name="shop_id" widget="selection" domain="[('ebay_shop','=','True')]" select="1"/>
+                     <separator string="Catalog" colspan="4" />
+                    <group col="4" colspan="4">
+                       
+                        <button name="import_ebay_products" string="Import Catalog" type="object" colspan="2" />
+                        <field name="last_ebay_catalog_import_date" colspan="2" />
+                    </group>
+                    <separator string="Stock Levels" colspan="4"/>
+                    <group col="4" colspan="4">
+                        <button name="export_inventory" string="Export Stock Levels Only"
+                                                    type="object" colspan="2" />
+                        <field name="last_inventory_export_date" />
+                    </group>
+                    <separator string="Orders" colspan="4" />
+                    <group col="4" colspan="4">
+                        <button name="import_orders" string="Import Orders"
+                                                colspan="2" type="object" />
+                        <field name="last_ebay_order_import_date"/>
+                    </group>
+                    <group col="4" colspan="4">
+                        <button name="update_orders" string="Update Orders Status"
+                                                    colspan="2" type="object" />
+                        <field name="last_update_order_export_date" />
+                    </group>
+                </form>
+            </field>
+        </record>
+<!-- Active Listing-->
+        <record model="ir.ui.view" id="ebayerp_view_active_form" >
+            <field name="name">ebayerp.view.active.form</field>
+            <field name="model">product.listing</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Active Listings">
+                    <field name="name" readonly="1"/>
+                    <field name="prod_list"/>
+                    <field name="shop_id" readonly="1"/>
+                    <field name="start_time" readonly="1"/>
+                    <field name="ebay_end_time" readonly="1"/>
+                    <!--<field name="ebay_item_id"/>-->
+                    <field name="related_template" widget="selection"/>
+                    <field name="type" readonly="1"/>
+                    <field name="listing_duration" readonly="1"/>
+                    <field name="time_remain_function"/>
+<!--                    <field name="is_cancel"/>-->
+                    <field name="cancel_listing"/>
+                    <field name="ending_reason" attrs="{'readonly':[('cancel_listing','=',False)]}"/>
+                    <field name="state"/>
+<!--                    <field name="time_rem"/>-->
+                  
+                    <group colspan="6">
+                        <button name="update_listing" string="Update Listing" type="object" attrs="{'invisible':[('cancel_listing','=',True)]}" />
+                        <button name="cancel_listing_btn" string="Cancel Listing" type="object" attrs="{'invisible':[('cancel_listing','=',False)]}"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="ebayerp_active_list">
+            <field name="name">ebayerp.active.list</field>
+            <field name="model">product.listing</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Active Listing">
+                    <field name="name"/>
+                    <field name="prod_list" readonly="1"/>
+                    <field name="ebay_name"/>
+                    <field name="shop_id" />
+                    <field name="ebay_end_time"/>
+                    <field name="start_time"/>
+                    <!--<field name="ebay_item_id"/>-->
+                    <field name="related_template"/>
+<!--                    <field name="is_cancel"/>-->
+                    <field name="type"/>
+                    <field name="listing_duration"/>
+                    <field name="time_remain_function"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_ebayerp_active_filter" model="ir.ui.view">
+            <field name="name">product.listing.list.select</field>
+            <field name="model">product.listing</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Search Active Listing">
+                 <group col='10' colspan='4'>
+                    <filter icon="terp-document-new" name="Active" string="Active Products" domain="[('state','=','Active')]" separator="1" help="Products which are in Active state"/>
+<!--                    <filter icon="terp-camera_test" name="Inactive" string="Expired Product" domain="[('state','=','Inactive')]" separator="1" help="Products which are in Expired state"/>-->
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="prod_list" />
+                    <field name="related_template"/>
+                    <field name="shop_id"/>
+                  </group>
+              </search>
+            </field>
+        </record>
+
+        <record id="action_ebayerp_active" model="ir.actions.act_window">
+            <field name="name">Active Listing</field>
+            <field name="res_model">product.listing</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <!--<field name="domain">[('state','=','Active']</field>-->
+            <field name="context">{'search_default_Active': 1}</field>
+            <field name="search_view_id" ref="view_ebayerp_active_filter"/>
+<!--        <field name="domain">[('ebay_end_time','&gt;',time.strftime('%Y-%m-%d'))]</field>-->
+        </record>
+<!--        <record model="ir.ui.view" id="ebayerp_tree">
+            <field name="name">ebayerp.tree</field>
+            <field name="model">ebayerp.template</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree  string="Ebay Template">
+                    <field name="title"/>
+                                
+                </tree>
+            </field>
+        </record>-->
+        <record model="ir.ui.view" id="ebayerp_tree_rel">
+            <field name="name">ebayerp.tree.rel</field>
+            <field name="model">ebayerp.relist</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree  string="Relist Products">
+                    <field name="shop_id" />
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="ebayerp_manage_order">
+            <field name="name">ebayerp.manage.order</field>
+            <field name="model">ebayerp.manage</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree  string="Manage Orders">
+                    <field name="shop_id" />
+                </tree>
+            </field>
+        </record>
+        <record id="action_ebayerp_template" model="ir.actions.act_window">
+            <field name="name">Ebay Template</field>
+            <field name="res_model">ebayerp.template</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="action_manage_order" model="ir.actions.act_window">
+            <field name="name">Manage Orders</field>
+            <field name="res_model">ebayerp.manage</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="action_list_completed" model="ir.actions.act_window">
+            <field name="name">Completed Listing</field>
+            <field name="res_model">ebayerp.relist</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</openerp>

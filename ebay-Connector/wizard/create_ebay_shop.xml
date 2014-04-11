@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- view for creating ebay shop-->
+        <record id="view_create_ebay_shop" model="ir.ui.view">
+            <field name="name">Create Ebay Shop</field>
+            <field name="model">create.ebay.shop</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Create Ebay Shop">
+                    <separator string="Ebay Shop" colspan="4" />
+                    <field name="name" />
+                    <field name="warehouse_id"/>
+                    <!--<field name="cust_address" />-->
+                    <field name="company_id" />
+                    <field name="pay_mthd" />
+                    <field name="email_add" widget="email"/>
+                    <field name="post_code"/>
+                    <field name="site_id"/>
+                    <newline/>
+                    <group col="2" colspan="4">
+                        <button special="cancel" string="_Cancel" icon="gtk-cancel"/>
+                        <button name="create_ebay_shop_action" string="Create Ebay Shop" type="object" icon="gtk-apply" />
+                    </group>
+
+                </form>
+            </field>
+        </record>
+<!--action for creating ebay shop-->
+        <record id="action_create_ebay_shop" model="ir.actions.act_window">
+            <field name="name">Create Ebay Shop</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">create.ebay.shop</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_create_ebay_shop"/>
+            <field name="target">new</field>
+        </record>
+        <record model="ir.values" id="ebayerp_instance_create_ebay_shop">
+            <field name="object" eval="1" />
+            <field name="name">Create Ebay Shop</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_create_ebay_shop'))" />
+            <field name="key">action</field>
+            <field name="model">ebayerp.instance</field>
+        </record>
+    </data>
+</openerp>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <menuitem id="menu_global_settings" name="Shipping Details" parent="menu_ebayerp_core_manage_prod" />
+        <record id="view_return_policy_tree" model="ir.ui.view">
+            <field name="name">view.return.policy.tree</field>
+            <field name="model">shipping.master</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Shipping Service">
+                    <field name="name"/>
+                    <field name="ship_car" />
+                    <field name="ship_time" />
+                    <field name="inter_ship" />
+                    <field name="ship_type" />
+                    <field name="ship_type1" />
+                    <field name="surch_chk" />
+                    <field name="dimension_chk" />
+                </tree>
+            </field>
+        </record>
+
+
+
+        <record id="view_return_policy_form" model="ir.ui.view">
+            <field name="name">view.return.policy.form</field>
+            <field name="model">shipping.master</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Shipping Services">
+                    <separator string="Shipping service" colspan="4" />
+                    <group colspan="4" col="8">
+                        <field name="name"/>
+                        <field name="ship_car" />
+                        <field name="ship_time" />
+                        <field name="inter_ship" />
+                        <field name="ship_ser" />
+                        <field name="ship_type" />
+                        <field name="ship_type1" />
+                        <field name="cost" />
+                        <field name="each_add" />
+                        <field name="surch_chk" />
+                        <field name="dimension_chk" />
+                        <newline/>
+                    </group>
+
+                </form>
+            </field>
+        </record>
+
+
+
+        <record id="action_return_policy" model="ir.actions.act_window">
+            <field name="name">Shipping Service</field>
+            <field name="res_model">shipping.master</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem action="action_return_policy" id="menu_return_policy" parent="menu_global_settings" />
+
+
+        <record id="view_loc_master_tree" model="ir.ui.view">
+            <field name="name">view.loc.master.tree</field>
+            <field name="model">loc.master</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Locations">
+                    <field name="name"/>
+                    <field name="loc_code" />
+                    <field name="region" />
+                </tree>
+            </field>
+        </record>
+
+
+
+        <record id="view_loc_master_form" model="ir.ui.view">
+            <field name="name">view.loc.master.form</field>
+            <field name="model">loc.master</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Locations">
+                    <separator string="Locations" colspan="4" />
+                    <group colspan="4" col="8">
+                        <field name="name"/>
+                        <field name="loc_code" />
+                        <field name="region" />
+                    </group>
+
+                </form>
+            </field>
+        </record>
+
+
+
+        <record id="action_loc_master" model="ir.actions.act_window">
+            <field name="name">Locations</field>
+            <field name="res_model">loc.master</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <menuitem action="action_loc_master" id="menu_location" parent="menu_global_settings" />
+
+        <record id="view_ship_master_tree" model="ir.ui.view">
+            <field name="name">view.ship.master.tree</field>
+            <field name="model">ship.loc.master</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Shipping Location">
+                    <field name="name"/>
+                    <field name="ship_code" />
+                </tree>
+            </field>
+        </record>
+
+
+
+        <record id="view_ship_master_form" model="ir.ui.view">
+            <field name="name">view.ship.master.form</field>
+            <field name="model">ship.loc.master</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Shipping Location">
+                    <separator string="Shipping Location" colspan="4" />
+                    <group colspan="4" col="8">
+                        <field name="name"/>
+                        <field name="ship_code" />
+                    </group>
+
+                </form>
+            </field>
+        </record>
+
+
+
+        <record id="action_ship_master" model="ir.actions.act_window">
+            <field name="name">Exclude Locations</field>
+            <field name="res_model">ship.loc.master</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <menuitem action="action_ship_master" id="menu_shipping" parent="menu_global_settings" />
+
+
+    </data>
+</openerp>

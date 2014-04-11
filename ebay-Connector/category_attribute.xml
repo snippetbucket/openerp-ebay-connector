@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <menuitem id="menu_category_master" name="Ebay Attributes"/>
+        <!-- For Categories Master Form view-->
+        <record id="view_category_attributes_form" model="ir.ui.view">
+            <field name="name">view.category.attributes.form</field>
+            <field name="model">category.master</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Categories">
+                   <field name="name" />
+                   <field name="ebay_category_id" on_change="onchange_category_id(ebay_category_id)"/>
+                   <group colspan="4" col="4">
+                   <field name="item_specifics" colspan="2"/>
+                   <field name="class_ad" colspan="2"/>
+                   <field name="condition_enabled" colspan="2"/>
+                   <field name="catlog_enabled" colspan="2"/>
+                   <button name="get_attribute" string="Get Attributes" type="object" icon="gtk-go-forward" colspan="2"/>
+                   <field name="site_id"/>
+                   </group>
+                   <field name="attribute_ids" colspan="8"/>
+
+               </form>
+            </field>
+            <!-- For Categories Master Tree View-->
+        </record>
+        <record id="view_category_attributes_tree" model="ir.ui.view">
+            <field name="name">view.category.attributes.tree</field>
+            <field name="model">category.master</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree  string="Categories">
+                    <field name="name" select="1"/>
+                    <field name="ebay_category_id" select="1"/>
+                    <field name="attribute_ids" />
+                    <field name="catlog_enabled" colspan="2"/>
+                    <field name="item_specifics" colspan="2"/>
+                    <field name="class_ad" colspan="2"/>
+                   <field name="condition_enabled" colspan="2"/>
+                    <field name="site_id"/>
+                </tree>
+            </field>
+        </record>
+        <!-- Action for the categories master-->
+        <record id="action_category_master" model="ir.actions.act_window">
+            <field name="name">Category</field>
+            <field name="res_model">category.master</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_category_attributes_tree"/>
+        </record>
+        <menuitem id="menu_category" name="Categories" parent="menu_category_master" action="action_category_master" />
+       <!--for Attributes Master Form View -->
+        <record id="view_attributes_form" model="ir.ui.view">
+            <field name="name">view.attributes.form</field>
+            <field name="model">attribute.master</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Attributes">
+                    <field name="name" colspan="2"/>
+                    <field name="attribute_id" colspan="2"/>
+                    <field name="attribute_type" colspan="2"/>
+                    <field name="categ_id" colspan="2"/>
+                    <field name="attribute_values" colspan="8" nolabel="1"/>
+                    
+                </form>
+            </field>
+        </record>
+        <!-- For Attributes Maste Tree view-->
+        <record id="view_attributes_tree" model="ir.ui.view">
+            <field name="name">view.attributes.tree</field>
+            <field name="model">attribute.master</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Attributes">
+                    <field name="name" />
+                    <field name="attribute_id" readonly="1" nolabel="1"/>
+                    <field name="attribute_type" />
+                    <field name="attribute_values" />
+                    <field name="categ_id" />
+                </tree>
+            </field>
+        </record>
+        <!-- Action for the attribute master-->
+        <record id="action_attribute_master" model="ir.actions.act_window">
+            <field name="name">Attributes</field>
+            <field name="res_model">attribute.master</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_attributes_tree"/>
+        </record>
+        <menuitem id="menu_attribute" name="Attribute" parent="menu_category_master" action="action_attribute_master"/>
+    </data>
+</openerp>

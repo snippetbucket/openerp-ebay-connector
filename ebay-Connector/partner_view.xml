@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+<!-- To view Ebay Details in partner form-->
+        <record id="view_partner_form_ebay_inherit1" model="ir.ui.view">
+            <field name="name">res.partner.form.ebay.inherit1</field>
+            <field name="model">res.partner</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="arch" type="xml">
+                <xpath expr="/form/notebook" position="inside">
+                    <page string="Ebay Information">
+                        <field name="ebay_eias_token" />
+                        <field name="ebay_reg_date" />
+                        <field name="ebay_user_id" />
+                        <field name="ebay_user_id_last_changed" />
+                        <field name="ebay_user_emaid_id" />
+                        <newline/>
+                        <separator string="Ebay Shops" colspan="4" />
+                        <field colspan="4" name="ebay_shop_ids" nolabel="1" widget="one2many_list">
+                            <tree string="Ebay Shops">
+                                <field name="name"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- For server offset -->
+
+        <!--<record id="view_users_form_1" model="ir.ui.view">
+           <field name="name">res.users.form.1</field>
+           <field name="model">res.users</field>
+           <field name="type">form</field>
+           <field name="inherit_id" ref="base.view_users_form"/>
+           <field name="arch" type="xml">
+               <xpath expr="/form/field[@name='new_password']" position="after">
+                   <field name="server_offset"/>
+               </xpath>
+            </field>
+    </record>-->
+    </data>
+</openerp>

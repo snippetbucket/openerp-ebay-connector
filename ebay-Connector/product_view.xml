@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_images_prod_field" model="ir.ui.view">
+            <field name="name">view.images.prod.field</field>
+            <field name="model">product.images</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="product_images_olbs.view_product_image_form" />
+            <field name="arch" type="xml">
+                <xpath expr="/form/notebook/page/group[2]/field[@name='image']" position="attributes" >
+                    <attribute name="widget">image</attribute>
+                   
+                </xpath>
+                <xpath expr="/form/notebook/page/group[1]/field[@name='link']" position="before" >
+                    <separator colspan="4" string="For Magento Images"/>
+                </xpath>
+             <!--<xpath expr="/form/notebook/page/field[@name='preview']" position="replace" >
+             </xpath>
+             <xpath expr="/form/notebook/page/separator[@string='Preview (Only when saved)']" position="replace" >
+             </xpath>-->
+
+                <field name='name' position="after">
+                    <separator colspan="4" string="For Ebay Images"/>
+                    <group col="3" colspan="3">
+                        <field name="chk_ebay_link" colspan="2"/>
+                        <field name="full_url" colspan="2" attrs="{'invisible': [('chk_ebay_link', '=', False)]}"/>
+                        <field name="preview_ebay" colspan="2" widget="image" attrs="{'invisible': [('chk_ebay_link', '=', False)]}"/>
+                    </group>
+                    <newline/>
+                    <field name="filename_ebay" widget="image"  colspan="2"/>
+                
+                </field>
+            </field>
+        </record>
+       
+        <record id="product_images_olbs.view_product_image_tree" model="ir.ui.view">
+            <field name="name">product.images.tree</field>
+            <field name="model">product.images</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Product Images">
+                    <field name="name" select="1" />
+<!--					<field name="image" />-->
+                    <field name="comments" select="2" />
+                </tree>
+            </field>
+        </record>
+
+      
+ <!-- for adding Ebay listing details in product_view-->
+        <record id="view_product_form_ebay_listing" model="ir.ui.view">
+            <field name="name">view.product.form.ebay.listing</field>
+            <field name="model">product.product</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="product.product_normal_form_view" />
+            <field name="arch" type="xml">
+                <xpath expr="/form/notebook/page[@string='Information']" position="after">
+                    <page string="Ebay Listing Details">
+                        <separator string="Ebay Listing Details" colspan="4"/>
+                        <field colspan="4" mode="tree,form" name="prods_list" nolabel="1" select="1">
+                            <form string="Listing Details">
+                                <field name="name"/>
+                                <field name="shop_id" />
+                                <field name="ebay_end_time"/>
+                                <field name="start_time"/>
+                                <!--<field name="ebay_item_id"/>-->
+                                <field name="is_cancel"/>
+                                <field name="type"/>
+                                   <!--<field name="time_remain"/>-->
+                            </form>
+                            <tree string="Listing Details">
+                                <field name="name"/>
+                                <field name="shop_id" />
+                                <field name="start_time"/>
+                                <field name="ebay_end_time"/>
+                                
+                                <!--<field name="ebay_item_id"/>-->
+                                <field name="is_cancel"/>
+                                <field name="type"/>
+<!--                                   <field name="time_remain"/>-->
+                                   <!--field name="lst_price"/>-->
+                                   <!--<field name="qty"/>-->
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+ <!-- For Category Attributes :view same as template:Used for changing "Attributes of Category" of product.-->
+        <record id="view_product_form_ebay_attribute" model="ir.ui.view">
+            <field name="name">product.form.ebay.attribute</field>
+            <field name="model">product.product</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="view_product_form_ebay_listing" />
+            <field name="arch" type="xml">
+                <xpath expr="/form/notebook/page[@string='Ebay Listing Details']" position="after">
+                    <page string="Ebay Listing Attributes">
+                        <!--<separator string="Ebay Details" colspan="8"/>-->
+                        <group cols="8" colspan="8">
+                            <field name="exported_to_ebay" colspan="2"/>
+                            <field name="ebay_sku" colspan="2"/>
+                         
+                        </group>
+
+                        <notebook colspan="4" attrs="{'invisible': [('exported_to_ebay', '!=', True)]}">
+                            <page string="Ebay Details">
+                                <group cols="8">
+                                    <field name="catalog_en" invisible="1"/>
+                                    <newline/>
+                                    <field name="ebay_condtn" colspan="8"/>
+                                    <field name="category_name" invisible="1"/>
+                      
+                                    <field name="product_reference_id" invisible="1"/>
+                                    <newline/>
+                                </group>
+                                <group>
+                                    <field name="bold_tl_prod" colspan="4"/>
+                                </group>
+                                <group colspan="8" >
+                                    <newline/>
+                                    <separator string="Catalog Product Review URL" colspan="8"/>
+                                    <newline/>
+                                    <field name="details_url" widget="url" on_change="onchange_details_url(details_url)"/>
+
+                                </group>
+                                <newline/>
+                                <group>
+                                    <field name="item_specifics_enabled_prod1" invisible="1"/>
+                                </group>
+                                <group col="4" colspan="8">
+                                    <field name="cat1" widget="selection" on_change="onchange_clear_attributes(cat1,cat2,category_name)" colspan="2"/>
+                                    <button name="%(action_catalog_en)d" string="Search Products" colspan="2" type="action" attrs="{'invisible': [('catalog_en', '=', 'unchecked')]}"/>
+                                </group>
+                            
+                                <field colspan="4" mode="tree,form" name="match_att_cat1" nolabel="1" select="1">
+                                    <form string="Attributes">
+                                        <field name="name" invisible="1" />
+                                        <field name="shop_id1" invisible="1"/>
+                                        <field name="attribute_name" domain="[('categ_id','=',parent.cat1)]" on_change="onchange_attribute_name(attribute_name)"/>
+                                        <field name="attribute_values_id" domain="[('att_master_id','=',attribute_name)]" attrs="{'invisible': [('hidden_field', '=', 'NULL')]}"/>
+                                        <field name="shop_id" invisible="1"/>
+                                        <field name="product_cat1_match" invisible="1"/>
+                                        <field name="product_cat2_match" invisible="1"/>
+                                        <field name="hidden_field" invisible="1"/>
+                                        <field name="text_field" attrs="{'invisible': [('hidden_field', '!=', 'NULL')]}" />
+                                    </form>
+                                    <tree string="Attributes">
+                                        <field name="name" invisible="1"/>
+                                        <field name="shop_id1" invisible="1"/>
+                                        <field name="attribute_name"/>
+                                        <field name="attribute_values_id" />
+                                        <field name="shop_id" invisible="1"/>
+                                        <field name="product_cat1_match" invisible="1"/>
+                                        <field name="product_cat2_match" invisible="1"/>
+                                        <field name="text_field"/>
+                                    </tree>
+                                </field>
+                            <!--to view custom item specifics for first category-->
+
+                                <group col="4" colspan="8">
+                                    <field name="cat2" widget="selection" on_change="onchange_clear_attributes_cat2(cat2,cat1,category_name)" colspan="2"/>
+                                </group>
+                                <field colspan="4" mode="tree,form" name="match_att_cat2" nolabel="1" select="1">
+                                    <form string="Attributes">
+                                        <field name="name" invisible="1" />
+                                        <field name="shop_id1" invisible="1"/>
+                                        <field name="attribute_name" domain="[('categ_id','=',parent.cat2)]" on_change="onchange_attribute_name(attribute_name)"/>
+                                        <field name="attribute_values_id" domain="[('att_master_id','=',attribute_name)]" attrs="{'invisible': [('hidden_field', '=', 'NULL')]}"/>
+                                        <field name="shop_id" invisible="1"/>
+                                        <field name="product_cat1_match" invisible="1"/>
+                                        <field name="product_cat2_match" invisible="1"/>
+                                        <field name="hidden_field" invisible="1"/>
+                                        <field name="text_field" attrs="{'invisible': [('hidden_field', '!=', 'NULL')]}" />
+                                    </form>
+                                    <tree string="Attributes">
+                                        <field name="name" invisible="1"/>
+                                        <field name="shop_id1" invisible="1"/>
+                                        <field name="attribute_name"/>
+                                        <field name="attribute_values_id"/>
+                                        <field name="text_field"/>
+                                        <field name="shop_id" invisible="1"/>
+                                        <field name="product_cat1_match" invisible="1"/>
+                                        <field name="product_cat2_match" invisible="1"/>
+                                    </tree>
+                                </field>
+                            <!--to view custom item specifics for second category-->
+
+                            <!--<field name="item_specifics_enabled_prod2" invisible="1"/>-->
+                                <group colspan="8" attrs="{'invisible': [('item_specifics_enabled_prod1', '!=', 'checked')]}">
+                                    <separator string="Custom Item Specifics" />
+                                    <field colspan="4" mode="tree,form" name="custom_item_specifics_prod_cat_gene" nolabel="1">
+                                        <form string="Custom Item Specifics">
+                                            <field name="name" invisible="1" />
+                                            <field name="custom_name"/>
+                                            <field name="custom_value"/>
+
+                                        </form>
+                                        <tree string="Custom Item Specifics">
+                                            <field name="name" invisible="1" />
+                                            <field name="custom_name"/>
+                                            <field name="custom_value"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                      
+                            </page>
+                            <page string="Ebay Place Holder">
+                                <field colspan="4" mode="tree,form" name="plcs_holds" nolabel="1" select="1">
+                                    <form string="Place Holder Details">
+                                        <field name="name"/>
+                                        <field name="value" />
+                                    </form>
+                                    <tree string="Place Holder Details">
+                                        <field name="name"/>
+                                        <field name="value" />
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </page>
+
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="product_dimension_view" model="ir.ui.view">
+            <field name="name">product.dimension.form</field>
+            <field name="model">product.product</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="/form/notebook/page[@string='Information']/group[3]/field[@name='weight_net']" position="after">
+
+                    <field colspan="2" name="ebay_breadth" />
+                    <field colspan="2" name="ebay_width" />
+                    <field colspan="2" name="ebay_height" />
+
+
+                </xpath>
+            </field>
+        </record>
+
+         <!--view for filters-->
+
+
+        <record id="product.product_search_form_view" model="ir.ui.view">
+            <field name="name">product.search.form</field>
+            <field name="model">product.product</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Product">
+                    <filter string="Services" icon="terp-accessories-archiver" domain="[('type','=','service')]"/>
+                    <filter string="Stockable" icon="terp-accessories-archiver" domain="['|',('type','=','product'),('type','=','consu')]"/>
+                    <separator orientation="vertical"/>
+                    <filter string="To Sell" icon="terp-accessories-archiver-minus" domain="[('sale_ok','=',1)]"/>
+                    <filter string="To Purchase" icon="terp-accessories-archiver+" domain="[('purchase_ok', '=', 1)]" />
+                    <separator orientation="vertical"/>
+                    <field name="default_code"/>
+                    <field name="name"/>
+                   <!--<field name="categ_id" widget="selection" operator="child_of" groups="base.group_extended"/>-->
+                    <field name="ebay_sku"/>
+                    <field name="cat1"/>
+                    <newline/>
+                    <group expand="0" string="Extended Filters..." groups="base.group_extended">
+                        <field name="pricelist_id" widget="selection" context="{'pricelist': self}" />
+                    </group>
+                    <newline/>
+                    <group  expand='0' string='Group by...' groups="base.group_extended">
+                        <filter string='Category' icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'categ_id'}" />
+                        <separator orientation="vertical"/>
+                        <filter string='Default UOM' icon="terp-mrp" domain="[]" context="{'group_by' : 'uom_id'}" />
+                        <separator orientation="vertical"/>
+                        <filter string='Type' icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'type'}" />
+                    </group>
+
+                </search>
+            </field>
+        </record>
+
+
+        <record id="product.product_product_tree_view" model="ir.ui.view">
+            <field name="name">product.product.tree</field>
+            <field name="model">product.product</field>
+            <field name="type">tree</field>
+            <field eval="7" name="priority"/>
+            <field name="arch" type="xml">
+                <tree colors="red:virtual_available&lt;0;blue:virtual_available&gt;=0 and state in ('draft', 'end', 'obsolete');black:virtual_available&gt;=0 and state not in ('draft', 'end', 'obsolete')" string="Products">
+
+                    <field name="name"/>
+                    <field name="categ_id" invisible="1"/>
+                    <field name="variants" groups="product.group_product_variant"/>
+                    <field name="ebay_sku" string="Ebay SKU"/>
+                    <field name="uom_id" string="UoM"/>
+                    <field name="type"/>
+                    <field name="qty_available"/>
+                    <field name="virtual_available"/>
+                    <field name="lst_price"/>
+                    <field name="price" invisible="not context.get('pricelist',False)"/>
+                    <field name="standard_price"/>
+                    <field name="state" groups="base.group_extended"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</openerp>
+

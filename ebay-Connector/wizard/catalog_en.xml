@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_create_catalog" model="ir.ui.view">
+            <field name="name">Catalaog Enabled</field>
+            <field name="model">catalog.enabled</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Catalaog Enabled">
+                    <group col="6" colspan="2">
+                        <field name="search_query" on_change="onchange_search_query(search_query)"/>
+                        <field name="name" attrs="{'invisible': [('search_query', '=', '')]}" />
+                        <button name="search_products" string="Search" type="object" icon="gtk-apply" />
+                        <newline/>
+                        <newline/>
+                        <field name="sequence" />
+                        <button name="accept_product" string="Accept" type="object" icon="gtk-go-forward" />
+                        <newline/>
+                        <field colspan="4" mode="tree,form" name="search_products_id" nolabel="1" select="1" attrs="{'invisible': [('error_string', '=',True)]}">
+                            <form string="Searched Products">
+                                <field name="sequence"/>
+                                <field name="name"/>
+                                <field name="product_reference_id" invisible="1"/>
+                                <newline/>
+                                <field name="details_url" widget="url"/>
+                                <field name="stock_photo_url" widget="url"/>
+
+                            </form>
+                            <tree string="Searched Products">
+                                <field name="sequence"/>
+                                <field name="name"/>
+                                <field name="details_url" widget="url"/>
+                            </tree>
+                        </field>
+                    </group>
+                </form>
+            </field>
+        </record>
+        <record id="action_catalog_en" model="ir.actions.act_window">
+            <field name="name">Catalog Enabled Products</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">catalog.enabled</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_create_catalog"/>
+            <field name="target">new</field>
+        </record>
+        </data>
+</openerp>

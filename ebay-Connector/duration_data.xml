@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+     <data noupdate="True">
+        <!--Duration Details for the Auction listing type-->
+        <record id="view_auction_days3" model="duration.time">
+           <field name="name">Days_3</field>
+           <field name="type">Chinese</field>
+        </record>
+        <record id="view_auction_days5" model="duration.time">
+           <field name="name">Days_5</field>
+           <field name="type">Chinese</field>
+        </record>
+        <record id="view_auction_days7" model="duration.time">
+           <field name="name">Days_7</field>
+           <field name="type">Chinese</field>
+        </record>
+       <record id="view_auction_days10" model="duration.time">
+           <field name="name">Days_10</field>
+           <field name="type">Chinese</field>
+        </record>
+        <!--Duration Details for the FixedPriceItem listing type-->
+        <record id="view_fixedpriceitem_days3" model="duration.time">
+           <field name="name">Days_3</field>
+           <field name="type">FixedPriceItem</field>
+        </record >
+        <record id="view_fixedpriceitem_days5" model="duration.time">
+           <field name="name">Days_5</field>
+           <field name="type">FixedPriceItem</field>
+        </record >
+        <record id="view_fixedpriceitem_days7" model="duration.time">
+           <field name="name">Days_7</field>
+           <field name="type">FixedPriceItem</field>
+        </record >
+        <record id="view_fixedpriceitem_days10" model="duration.time">
+           <field name="name">Days_10</field>
+           <field name="type">FixedPriceItem</field>
+        </record >
+        <record id="view_fixedpriceitem_days30" model="duration.time">
+           <field name="name">Days_30</field>
+           <field name="type">FixedPriceItem</field>
+        </record >
+        <!--Duration details for the leadgeneration listing type-->
+        <record id="view_leadgeneration_days30" model="duration.time">
+           <field name="name">Days_30</field>
+           <field name="type">LeadGeneration</field>
+        </record >
+        <record id="view_leadgeneration_days90" model="duration.time">
+           <field name="name">Days_90</field>
+           <field name="type">LeadGeneration</field>
+        </record >
+
+    </data>
+</openerp>

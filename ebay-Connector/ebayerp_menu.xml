@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- view for all the Ebay menus-->
+        <menuitem id="menu_ebayerp" name="Ebay-Module" sequence="6" web_icon="images/ebay.png"
+           web_icon_hover="images/ebay-hover.png" />
+        <menuitem id="menu_ebayerp_core" name="Configuration Settings" parent="menu_ebayerp" />
+
+        <menuitem id="menu_ebayerp_core_instances" name="Ebay Instances" parent="menu_ebayerp_core" action="action_ebayerp_instance" />
+
+        <menuitem id="menu_ebayerp_core_shops" name="Ebay Stores" parent="menu_ebayerp_core" action="act_ebayerp_shop_form" />
+
+        <menuitem id="menu_ebayerp_core_manage_prod" name="Templates and Attributes" parent="menu_ebayerp"/>
+
+        <menuitem id="menu_category_master" name="Ebay Attributes" parent="menu_ebayerp_core_manage_prod"/>
+                <!--<menuitem id="menu_ebayerp_core_attribites" name="Product Attributes" parent="menu_ebayerp_core_manage_prod"/>-->
+        <menuitem id="menu_ebayerp_core_templates" name="Templates" parent="menu_ebayerp_core_manage_prod" action="action_ebayerp_template"/>
+                <!--<menuitem id="menu_product_listing" name="Product Listing" parent="menu_ebayerp_core_manage_prod" action="action_product_listing"/>-->
+        <menuitem id="menu_ebayerp_proc" name="Ebay Listings" parent="menu_ebayerp" />
+        <menuitem id="menu_ebayerp_proc_list" name="Item Listings" parent="menu_ebayerp_proc" />
+        <menuitem id="menu_product_listing" name="List Items" parent="menu_ebayerp_proc_list" action="action_product_listing"/>
+        <menuitem id="menu_ebayerp_active" name="Active Listings" parent="menu_ebayerp_proc_list" action="action_ebayerp_active"/>
+        <menuitem id="menu_ebayerp_completed" name="Completed Listings" parent="menu_ebayerp_proc_list" action="action_list_completed"/>
+                <!--<menuitem id="menu_ebayerp_proc_relist" name="Relisting Details" parent="menu_ebayerp_proc" action="action_ebayerp_relist" />-->
+        <menuitem id="menu_ebayerp_proc_manage_orders" name="Manage Orders" parent="menu_ebayerp" action="action_manage_order"/>
+    </data>
+</openerp>

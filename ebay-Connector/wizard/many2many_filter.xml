@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- view for additem filter-->
+        <record id="view_many2many_filter" model="ir.ui.view">
+          <field name="name">view.many2many.filter</field>
+          <field name="model">many2many.filter</field>
+          <field name="type">form</field>
+          <field name="arch" type="xml">
+              <form string="Products To be Listed">
+                  <field colspan="6" mode="tree,form" name="product_ids_filter" nolabel="1">
+                                          <form string="Products">
+                                              <field name="name"/>
+                                          </form>
+                                          <tree string="Products">
+                                              <field name="name"/>
+                                          </tree>
+                    </field>
+              </form>
+               <button name="confirm_button" string="Confirm" type="object" colspan="2"/>
+          </field>
+       </record>
+
+        <record id="action_many2many_filter" model="ir.actions.act_window">
+            <field name="name">Products to be Listed</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">many2many.filter</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_many2many_filter"/>
+            <field name="target">new</field>
+        </record>
+    </data>
+</openerp>

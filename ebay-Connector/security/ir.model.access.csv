@@ -1,0 +1,3 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_ebayerp_instance_group_sale_manager","ebayerp_instance_group_sale_manager","model_ebayerp_instance","base.group_sale_manager",1,1,1,1
+
